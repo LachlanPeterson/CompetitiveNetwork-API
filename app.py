@@ -1,7 +1,8 @@
-from flask import Flask
+from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 from datetime import date
 from flask_marshmallow import Marshmallow
+from flask_bcrypt import Bcrypt
 
 app = Flask(__name__)
 
@@ -13,6 +14,7 @@ app.config['JSON_SORT_KEYS'] = False
 # Open connection to database and intilized alchemy
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
+bcrypt = Bcrypt(app)
 
 # User Entity model for Users
 class User(db.Model):
@@ -21,13 +23,13 @@ class User(db.Model):
   user_id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String(50)) # name 16 characters max
   email = db.Column(db.String(50), nullable=False, unique=True)
-  password = db.Column(db.String(50), nullable=False)
+  password = db.Column(db.String(), nullable=False)
   is_admin = db.Column(db.Boolean, default=False)
   date_created = db.Column(db.Date())
 
 class UserSchema(ma.Schema):
    class Meta:
-      fields = ('name', 'email', 'date_created', 'is_admin')
+      fields = ('name', 'email', 'password', 'date_created', 'is_admin')
      
 
 class Game(db.Model):
@@ -61,14 +63,14 @@ def seed_db():
       User(
             name = 'Lachlan Peterson',
             email = 'LachlanPeterson@gmail.com',
-            password = 'LPassword123',
+            password = bcrypt.generate_password_hash('LPassword123').decode('utf-8'),
             date_created = date.today(),
             is_admin = True,
          ),
          User(
             name = 'Regular User',
             email = 'regular_user@gmail.com',
-            password = 'RUser123',
+            password = bcrypt.generate_password_hash('RUser123').decode('utf-8'),
             date_created = date.today(),
          ),
    ]
@@ -125,6 +127,26 @@ def all_games():
     games = db.session.scalars(stmt).all()
     for game in games:
         print(game.__dict__)
+
+# Register Endpoint, only want to accept post requests
+@app.route('/register', methods=['POST'])
+def register():
+   # Parse, sanitize and validate the incoming JSON data
+   # via the schema
+   user_info = UserSchema().load(request.json)
+   # Create a new User model instance with the schema data
+   user = User(
+      name = user_info['name'],
+      email = user_info['email'],
+      password = bcrypt.generate_password_hash(user_info['password']).decode('utf-8')
+   )
+   
+   # Add and commit the new user to the database
+   db.session.add(user)
+   db.session.commit()
+
+   # Return the new user, excluding the password
+   return UserSchema(exclude=['password']).dump(user), 201
 
 
 @app.route('/')
