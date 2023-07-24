@@ -1,21 +1,24 @@
 from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
-from datetime import date
+from datetime import date, timedelta
 from flask_marshmallow import Marshmallow
 from flask_bcrypt import Bcrypt
 from sqlalchemy.exc import IntegrityError
+from flask_jwt_extended import JWTManager, create_access_token
 
 app = Flask(__name__)
 
 # protocol + adapter + username and password @ the port
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://cn_dev:cndev123@localhost:5432/competitive_network'
 
-app.config['JSON_SORT_KEYS'] = False
+app.config['JWT_SECRET_KEY'] = 'compnetchallenger'
+
 
 # Open connection to database and intilized alchemy
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
 bcrypt = Bcrypt(app)
+jwt = JWTManager(app)
 
 # User Entity model for Users
 class User(db.Model):
@@ -158,7 +161,8 @@ def login():
       stmt = db.select(User).filter_by(email=request.json['email'])
       user = db.session.scalar(stmt)
       if user and bcrypt.check_password_hash(user.password, request.json['password']):
-         return UserSchema(exclude=['password']).dump(user)
+         token = create_access_token(identity=user.email, expires_delta=timedelta(days=7))
+         return {'token': token, 'user': UserSchema(exclude=['password']).dump(user)}
       else:
          return {'error': 'Invalid email address or password'}, 401
    except KeyError:
