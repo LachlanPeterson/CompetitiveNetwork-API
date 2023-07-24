@@ -83,6 +83,17 @@ def seed_db():
    db.session.commit()
    print('Models seeded')
 
+# Testing SQL Queries - title of all games
+@app.cli.command('all_games')
+def all_games():
+# Select * from games; 
+# Showing all games in the competitive_network database
+    stmt = db.select(Game)
+    games = db.session.scalars(stmt).all()
+    for game in games:
+        print(game.title)
+        # Ends up with a list of model queries we can use
+
 
 @app.route('/')
 def index():
