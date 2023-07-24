@@ -67,8 +67,8 @@ def seed_db():
          ),
          User(
             name = 'Regular User',
-          email = 'regular_user@gmail.com',
-          password = 'RUser123',
+            email = 'regular_user@gmail.com',
+            password = 'RUser123',
             date_created = date.today(),
          ),
    ]
