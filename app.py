@@ -13,7 +13,7 @@ db = SQLAlchemy(app)
 # User Entity model for Users
 class User(db.Model):
   __tablename__ = 'users'
-  
+
   user_id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String(16)) # name 16 characters max
   email = db.Column(db.String(50))
@@ -21,16 +21,26 @@ class User(db.Model):
   is_admin = db.Column(db.Boolean(True))
   date_created = db.Column(db.Date())
 
+class Game(db.Model):
+   __tablename__ = 'games'
+
+   game_id = db.Column(db.Integer, primary_key=True)
+   title = db.Column(db.String(50))
+   description = db.Column(db.Text())
+   genre = db.Column(db.String(50))
+   rank_system = db.Column(db.Text())
+
 # Cli command to create tables
 @app.cli.command('create')
 def create_db():
    db.drop_all()
    db.create_all()
-   print('Testing table creation')
+   print('Tables created successfully')
 
 # Cli command to seed tables
 @app.cli.command('seed')
 def seed_db():
+#    Create instance of the User model in memory
    users = User(
       name = 'LachlanPeterson',
       email = 'LachlanPeterson@gmail.com',
@@ -38,12 +48,36 @@ def seed_db():
       is_admin = True,
       date_created = date.today(),
    )
+   games = [
+      Game(
+            title = 'League of Legends',
+            description = 'LoL Description',
+            genre = 'MOBA - Multiplayer Online Battle Arena',
+            rank_system = "Rank system filler"
+        ),
+        Game(
+            title = 'Valorant',
+            description = 'Valorant Description',
+            genre = 'FPTS - First Person Tactical Shooter',
+            rank_system = "Rank system filler"
+        ),
+        Game(
+            title = 'CS:GO - Counter Strike Global Offensive',
+            description = 'CS:GO Description',
+            genre = 'FPS - First Person Shooter',
+            rank_system = "Rank system filler"
+        ),
+   ]
+    
+        
 
 #    Truncate the User table
    db.session.query(User).delete()
+   db.session.query(Game).delete()
 
-#    Add the user to the session (transaction)
+#    Add the user or new card to the session (transaction)
    db.session.add(users)
+   db.session.add_all(games)
 
 #    Commit the transaction to the database
    db.session.commit()
