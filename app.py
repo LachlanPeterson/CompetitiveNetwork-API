@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import date
 from flask_marshmallow import Marshmallow
 from flask_bcrypt import Bcrypt
+from sqlalchemy.exc import IntegrityError
 
 app = Flask(__name__)
 
@@ -131,23 +132,37 @@ def all_games():
 # Register Endpoint, only want to accept post requests
 @app.route('/register', methods=['POST'])
 def register():
-   # Parse, sanitize and validate the incoming JSON data
-   # via the schema
-   user_info = UserSchema().load(request.json)
-   # Create a new User model instance with the schema data
-   user = User(
-      name = user_info['name'],
-      email = user_info['email'],
-      password = bcrypt.generate_password_hash(user_info['password']).decode('utf-8')
-   )
-   
-   # Add and commit the new user to the database
-   db.session.add(user)
-   db.session.commit()
+   try:
+      # Parse, sanitize and validate the incoming JSON data
+      # via the schema
+      user_info = UserSchema().load(request.json)
+      # Create a new User model instance with the schema data
+      user = User(
+         name = user_info['name'],
+         email = user_info['email'],
+         password = bcrypt.generate_password_hash(user_info['password']).decode('utf-8')
+      )
+      
+      # Add and commit the new user to the database
+      db.session.add(user)
+      db.session.commit()
 
-   # Return the new user, excluding the password
-   return UserSchema(exclude=['password']).dump(user), 201
+      # Return the new user, excluding the password
+      return UserSchema(exclude=['password']).dump(user), 201
+   except IntegrityError:
+      return {'error': 'Email address is already registered'}, 409
 
+@app.route('/login', methods=['POST'])
+def login():
+   try:
+      stmt = db.select(User).filter_by(email=request.json['email'])
+      user = db.session.scalar(stmt)
+      if user and bcrypt.check_password_hash(user.password, request.json['password']):
+         return UserSchema(exclude=['password']).dump(user)
+      else:
+         return {'error': 'Invalid email address or password'}, 401
+   except KeyError:
+      return {'error': 'Email and password are required'}, 400
 
 @app.route('/')
 def index():
