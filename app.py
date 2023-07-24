@@ -19,11 +19,16 @@ class User(db.Model):
   __tablename__ = 'users'
 
   user_id = db.Column(db.Integer, primary_key=True)
-  name = db.Column(db.String(16)) # name 16 characters max
-  email = db.Column(db.String(50))
-  password = db.Column(db.String(50))
-  is_admin = db.Column(db.Boolean(True))
+  name = db.Column(db.String(50)) # name 16 characters max
+  email = db.Column(db.String(50), nullable=False, unique=True)
+  password = db.Column(db.String(50), nullable=False)
+  is_admin = db.Column(db.Boolean, default=False)
   date_created = db.Column(db.Date())
+
+class UserSchema(ma.Schema):
+   class Meta:
+      fields = ('name', 'email', 'date_created', 'is_admin')
+     
 
 class Game(db.Model):
    __tablename__ = 'games'
@@ -37,7 +42,7 @@ class Game(db.Model):
 # Marshmallow needs to know what fields to include in the Json
 class GameSchema(ma.Schema):
    class Meta:
-      fields = ('game_id', 'title', 'description', 'genre', 'rank_system')
+      fields = ('title', 'description', 'genre', 'rank_system')
       
 
 
@@ -52,13 +57,22 @@ def create_db():
 @app.cli.command('seed')
 def seed_db():
 #    Create instance of the User model in memory
-   users = User(
-      name = 'LachlanPeterson',
-      email = 'LachlanPeterson@gmail.com',
-      password = 'LPassword123',
-      is_admin = True,
-      date_created = date.today(),
-   )
+   users = [
+      User(
+            name = 'Lachlan Peterson',
+            email = 'LachlanPeterson@gmail.com',
+            password = 'LPassword123',
+            date_created = date.today(),
+            is_admin = True,
+         ),
+         User(
+            name = 'Regular User',
+          email = 'regular_user@gmail.com',
+          password = 'RUser123',
+            date_created = date.today(),
+         ),
+   ]
+   
    games = [
       Game(
             title = 'League of Legends',
@@ -81,18 +95,18 @@ def seed_db():
    ]
     
         
-
 #    Truncate the User table
    db.session.query(User).delete()
    db.session.query(Game).delete()
 
 #    Add the user or new card to the session (transaction)
-   db.session.add(users)
+   db.session.add_all(users)
    db.session.add_all(games)
 
 #    Commit the transaction to the database
    db.session.commit()
    print('Models seeded')
+
 
 # Turning all games query into a Route
 @app.route('/games')
