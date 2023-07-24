@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from datetime import date
+import json
 
 app = Flask(__name__)
 
@@ -58,7 +59,7 @@ def seed_db():
         Game(
             title = 'Valorant',
             description = 'Valorant Description',
-            genre = 'FPTS - First Person Tactical Shooter',
+            genre = 'FPS - First Person Shooter',
             rank_system = "Rank system filler"
         ),
         Game(
@@ -83,16 +84,23 @@ def seed_db():
    db.session.commit()
    print('Models seeded')
 
-# Testing SQL Queries - title of all games
-@app.cli.command('all_games')
+# Turning all games query into a Route
+@app.route('/games')
 def all_games():
 # Select * from games; 
 # Showing all games in the competitive_network database
-    stmt = db.select(Game)
+    stmt = db.select(Game).order_by(Game.title)
+    games = db.session.scalars(stmt).all()
+    return json.dumps(games)
+
+# Testing SQL Queries - all fps games
+@app.cli.command('fps_games')
+def all_games():
+# Showing all fps games in the competitive_network database
+    stmt = db.select(Game).where(Game.genre == 'FPS - First Person Shooter').order_by(Game.title)
     games = db.session.scalars(stmt).all()
     for game in games:
-        print(game.title)
-        # Ends up with a list of model queries we can use
+        print(game.__dict__)
 
 
 @app.route('/')
