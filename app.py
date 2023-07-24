@@ -1,15 +1,18 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from datetime import date
-import json
+from flask_marshmallow import Marshmallow
 
 app = Flask(__name__)
 
 # protocol + adapter + username and password @ the port
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://cn_dev:cndev123@localhost:5432/competitive_network'
 
+app.config['JSON_SORT_KEYS'] = False
+
 # Open connection to database and intilized alchemy
 db = SQLAlchemy(app)
+ma = Marshmallow(app)
 
 # User Entity model for Users
 class User(db.Model):
@@ -30,6 +33,13 @@ class Game(db.Model):
    description = db.Column(db.Text())
    genre = db.Column(db.String(50))
    rank_system = db.Column(db.Text())
+
+# Marshmallow needs to know what fields to include in the Json
+class GameSchema(ma.Schema):
+   class Meta:
+      fields = ('game_id', 'title', 'description', 'genre', 'rank_system')
+      
+
 
 # Cli command to create tables
 @app.cli.command('create')
@@ -91,7 +101,7 @@ def all_games():
 # Showing all games in the competitive_network database
     stmt = db.select(Game).order_by(Game.title)
     games = db.session.scalars(stmt).all()
-    return json.dumps(games)
+    return GameSchema(many=True).dump(games)
 
 # Testing SQL Queries - all fps games
 @app.cli.command('fps_games')
