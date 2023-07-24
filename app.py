@@ -4,7 +4,7 @@ from datetime import date, timedelta
 from flask_marshmallow import Marshmallow
 from flask_bcrypt import Bcrypt
 from sqlalchemy.exc import IntegrityError
-from flask_jwt_extended import JWTManager, create_access_token
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 
 app = Flask(__name__)
 
@@ -48,7 +48,7 @@ class Game(db.Model):
 # Marshmallow needs to know what fields to include in the Json
 class GameSchema(ma.Schema):
    class Meta:
-      fields = ('title', 'description', 'genre', 'rank_system')
+      fields = ('game_id', 'title', 'description', 'genre', 'rank_system')
       
 
 
@@ -167,6 +167,22 @@ def login():
          return {'error': 'Invalid email address or password'}, 401
    except KeyError:
       return {'error': 'Email and password are required'}, 400
+   
+@app.route('/users')
+@jwt_required()
+def all_users():
+   # Using jwt auth to validate admin user
+   user_email = get_jwt_identity()
+   stmt = db.select(User).filter_by(email=user_email)
+   user = db.session.scalar(stmt)
+   if not user.is_admin:
+      return {'error': 'You must be an admin to access this content'}, 401
+
+
+   # Select * from users
+   stmt = db.select(User).order_by(User.name)
+   users = db.session.scalars(stmt).all()
+   return UserSchema(many=True, exclude=['password']).dump(users)
 
 @app.route('/')
 def index():
