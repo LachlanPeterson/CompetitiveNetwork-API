@@ -1,17 +1,20 @@
-from flask import Flask, request
+from flask import Flask, request, abort
 from flask_sqlalchemy import SQLAlchemy
 from datetime import date, timedelta
 from flask_marshmallow import Marshmallow
 from flask_bcrypt import Bcrypt
 from sqlalchemy.exc import IntegrityError
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+from os import environ
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 
 # protocol + adapter + username and password @ the port
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://cn_dev:cndev123@localhost:5432/competitive_network'
-
-app.config['JWT_SECRET_KEY'] = 'compnetchallenger'
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('DB_URI')
+app.config['JWT_SECRET_KEY'] = environ.get('JWT_KEY')
 
 
 # Open connection to database and intilized alchemy
@@ -19,6 +22,20 @@ db = SQLAlchemy(app)
 ma = Marshmallow(app)
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
+
+
+def admin_required():
+   # Using jwt auth to validate admin user
+   user_email = get_jwt_identity()
+   stmt = db.select(User).filter_by(email=user_email)
+   user = db.session.scalar(stmt)
+   if not (user and user.is_admin):
+      abort(401)
+
+@app.errorhandler(401)
+def unauthorized(err):
+   return {'error': 'You must be an admin'}, 401
+
 
 # User Entity model for Users
 class User(db.Model):
@@ -171,18 +188,12 @@ def login():
 @app.route('/users')
 @jwt_required()
 def all_users():
-   # Using jwt auth to validate admin user
-   user_email = get_jwt_identity()
-   stmt = db.select(User).filter_by(email=user_email)
-   user = db.session.scalar(stmt)
-   if not user.is_admin:
-      return {'error': 'You must be an admin to access this content'}, 401
+    admin_required()
 
-
-   # Select * from users
-   stmt = db.select(User).order_by(User.name)
-   users = db.session.scalars(stmt).all()
-   return UserSchema(many=True, exclude=['password']).dump(users)
+    # Select * from users;
+    stmt = db.select(User).order_by(User.name)
+    users = db.session.scalars(stmt).all()
+    return UserSchema(many=True, exclude=['password']).dump(users)
 
 @app.route('/')
 def index():
