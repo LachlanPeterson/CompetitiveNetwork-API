@@ -8,6 +8,7 @@ class Game(db.Model):
    description = db.Column(db.Text())
    genre = db.Column(db.String(50))
    rank_system = db.Column(db.Text())
+   date_created = db.Column(db.Date())
 
 # Marshmallow needs to know what fields to include in the Json
 class GameSchema(ma.Schema):
