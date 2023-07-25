@@ -1,8 +1,8 @@
 from init import db, ma
-from marshmallow import fields
-from marshmallow.validate import Length, OneOf, And, Regexp
+from marshmallow import fields, validates_schema
+from marshmallow.validate import Length, And, Regexp, ValidationError
 
-VALID_GENRES = ('FPS', 'MOBA', 'MMO', 'RTS', 'Survival', 'Video Game', 'Sports', 'Platforming')
+VALID_GENRES = ['Video Game', 'FPS', 'MOBA', 'MMO', 'RTS', 'Survival', 'Sports', 'Platforming']
 
 class Game(db.Model):
    __tablename__ = 'games'
@@ -30,7 +30,15 @@ class GameSchema(ma.Schema):
       Regexp('^[a-zA-Z0-9 ]+$', error = 'Only letters, numbers and spaces are allowed')
       ))
    description = fields.String(load_default='')
-   genre = fields.String(load_default=VALID_GENRES[5], validate=OneOf(VALID_GENRES))
+   genre = fields.String(load_default=VALID_GENRES[0])
+
+   @validates_schema()
+   def validate_genre(self, data, **kwargs):
+      genre = [x for x in VALID_GENRES if x.upper() == data['genre'].upper()]
+      if len(genre) == 0:
+         raise ValidationError(f'Genre must be one of: {VALID_GENRES}')
+      
+      data['genre'] = genre[0]
 
    class Meta:
       fields = ('game_id', 'title', 'description', 'genre', 'rank_system', 'user', 'ranks')
