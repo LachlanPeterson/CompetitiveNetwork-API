@@ -4,17 +4,17 @@ from models.user import User
 from models.game import Game
 from init import db, bcrypt
 
-db_commands = Blueprint('db', __name__)
+cli_bp = Blueprint('db', __name__)
 
 # Create Tables
-@db_commands.cli.command('create')
+@cli_bp.cli.command('create')
 def create_db():
    db.drop_all()
    db.create_all()
    print('Tables created successfully')
 
 # Seed Tables
-@db_commands.cli.command('seed')
+@cli_bp.cli.command('seed')
 def seed_db():
 #    Create instance of the User model in memory
    users = [
@@ -32,7 +32,7 @@ def seed_db():
             date_created = date.today(),
          ),
    ]
-   
+   #    Create instance of the Game model in memory
    games = [
       Game(
             title = 'League of Legends',
@@ -69,7 +69,7 @@ def seed_db():
 
 
 # Testing SQL Queries - all fps games
-@db_commands.cli.command('fps_games')
+@cli_bp.cli.command('fps_games')
 def all_games():
 # Showing all fps games in the competitive_network database
     stmt = db.select(Game).where(Game.genre == 'FPS - First Person Shooter').order_by(Game.title)
