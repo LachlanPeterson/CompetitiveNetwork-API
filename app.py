@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 from models.user import User, UserSchema
 from models.game import Game, GameSchema
 from init import db, ma, bcrypt, jwt
+from blueprints.cli_bp import db_commands
 
 load_dotenv()
 
@@ -37,66 +38,7 @@ def admin_required():
 def unauthorized(err):
    return {'error': 'You must be an admin'}, 401
 
-# Cli command to create tables
-@app.cli.command('create')
-def create_db():
-   db.drop_all()
-   db.create_all()
-   print('Tables created successfully')
-
-# Cli command to seed tables
-@app.cli.command('seed')
-def seed_db():
-#    Create instance of the User model in memory
-   users = [
-      User(
-            name = 'Lachlan Peterson',
-            email = 'LachlanPeterson@gmail.com',
-            password = bcrypt.generate_password_hash('LPassword123').decode('utf-8'),
-            date_created = date.today(),
-            is_admin = True,
-         ),
-         User(
-            name = 'Regular User',
-            email = 'regular_user@gmail.com',
-            password = bcrypt.generate_password_hash('RUser123').decode('utf-8'),
-            date_created = date.today(),
-         ),
-   ]
-   
-   games = [
-      Game(
-            title = 'League of Legends',
-            description = 'LoL Description',
-            genre = 'MOBA - Multiplayer Online Battle Arena',
-            rank_system = "Rank system filler"
-        ),
-        Game(
-            title = 'Valorant',
-            description = 'Valorant Description',
-            genre = 'FPS - First Person Shooter',
-            rank_system = "Rank system filler"
-        ),
-        Game(
-            title = 'CS:GO - Counter Strike Global Offensive',
-            description = 'CS:GO Description',
-            genre = 'FPS - First Person Shooter',
-            rank_system = "Rank system filler"
-        ),
-   ]
-    
-        
-#    Truncate the User table
-   db.session.query(User).delete()
-   db.session.query(Game).delete()
-
-#    Add the user or new card to the session (transaction)
-   db.session.add_all(users)
-   db.session.add_all(games)
-
-#    Commit the transaction to the database
-   db.session.commit()
-   print('Models seeded')
+app.register_blueprint(db_commands)
 
 
 # Turning all games query into a Route
@@ -108,14 +50,7 @@ def all_games():
     games = db.session.scalars(stmt).all()
     return GameSchema(many=True).dump(games)
 
-# Testing SQL Queries - all fps games
-@app.cli.command('fps_games')
-def all_games():
-# Showing all fps games in the competitive_network database
-    stmt = db.select(Game).where(Game.genre == 'FPS - First Person Shooter').order_by(Game.title)
-    games = db.session.scalars(stmt).all()
-    for game in games:
-        print(game.__dict__)
+
 
 # Register Endpoint, only want to accept post requests
 @app.route('/register', methods=['POST'])
