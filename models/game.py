@@ -20,7 +20,7 @@ class Game(db.Model):
 # Marshmallow needs to know what fields to include in the Json
 class GameSchema(ma.Schema):
    # Telling marshmallow to use UserSchema to serialize the 'user' field
-   user = fields.Nested('UserSchema', exclude=['password', 'date_created', 'games'])
+   user = fields.Nested('UserSchema', exclude=['password', 'date_created', 'games', 'ranks'])
    ranks = fields.List(fields.Nested('RankSchema', exclude=['game', 'rank_id']))
 
    class Meta:

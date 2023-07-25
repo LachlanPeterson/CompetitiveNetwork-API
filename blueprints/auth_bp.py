@@ -16,6 +16,14 @@ def admin_required():
    if not (user and user.is_admin):
       abort(401)
 
+def admin_or_owner_required(owner_id):
+   # Using jwt auth to validate admin user
+   user_id = get_jwt_identity()
+   stmt = db.select(User).filter_by(user_id=user_id)
+   user = db.session.scalar(stmt)
+   if not (user and (user.is_admin or user_id == owner_id)):
+      abort(401)
+
 
 # Register Endpoint
 @auth_bp.route('/register', methods=['POST'])
@@ -49,7 +57,7 @@ def login():
       user = db.session.scalar(stmt)
       if user and bcrypt.check_password_hash(user.password, request.json['password']):
          token = create_access_token(identity=user.user_id, expires_delta=timedelta(days=7))
-         return {'token': token, 'user': UserSchema(exclude=['password', 'games', 'date_created']).dump(user)}
+         return {'token': token, 'user': UserSchema(exclude=['password', 'games', 'ranks', 'date_created']).dump(user)}
       else:
          return {'error': 'Invalid email address or password'}, 401
    except KeyError:
