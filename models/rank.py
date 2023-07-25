@@ -9,10 +9,10 @@ class Rank(db.Model):
    rank = db.Column(db.String(50))
    date_created = db.Column(db.Date())
 
-   user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
+   user_id = db.Column(db.Integer, db.ForeignKey('users.user_id', ondelete='CASCADE'), nullable=False)
    user = db.relationship('User', back_populates='ranks')
 
-   game_id = db.Column(db.Integer, db.ForeignKey('games.game_id'), nullable=False)
+   game_id = db.Column(db.Integer, db.ForeignKey('games.game_id', ondelete='CASCADE'), nullable=False)
    game = db.relationship('Game', back_populates='ranks')
 
 

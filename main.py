@@ -5,6 +5,7 @@ from blueprints.cli_bp import cli_bp
 from blueprints.auth_bp import auth_bp
 from blueprints.users_bp import users_bp
 from blueprints.games_bp import games_bp
+from marshmallow.exceptions import ValidationError
 
 def setup():
    app = Flask(__name__)
@@ -21,7 +22,11 @@ def setup():
 
    @app.errorhandler(401)
    def unauthorized(err):
-      return {'error': 'You must be an admin'}, 401
+      return {'error': str(err)}, 401
+   
+   @app.errorhandler(ValidationError)
+   def validation_error(err):
+      return {'error': err.__dict__['messages']}, 400
 
    app.register_blueprint(cli_bp)
    app.register_blueprint(auth_bp)

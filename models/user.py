@@ -12,8 +12,8 @@ class User(db.Model):
   is_admin = db.Column(db.Boolean, default=False)
   date_created = db.Column(db.Date())
 
-  games = db.relationship('Game', back_populates='user')
-  ranks = db.relationship('Rank', back_populates='user')
+  games = db.relationship('Game', back_populates='user', cascade='all, delete')
+  ranks = db.relationship('Rank', back_populates='user', cascade='all, delete')
 
 class UserSchema(ma.Schema):
    games = fields.List(fields.Nested('GameSchema', exclude=['user', 'game_id']))
