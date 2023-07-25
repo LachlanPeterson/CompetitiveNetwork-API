@@ -7,11 +7,32 @@ from datetime import date
 
 games_bp = Blueprint('games', __name__, url_prefix='/games')
 
+# C in CRUD
+# Create a new game - same route as get all(but post method)
+@games_bp.route('/', methods=['POST'])
+# Someone must be logged in
+@jwt_required()
+def create_game():
+    # Load the incoming POST data via the schema
+    game_info = GameSchema().load(request.json)
+    # Created a new Game instance from the game_info
+    game = Game(
+        title = game_info['title'],
+        description = game_info['description'],
+        genre = game_info['genre'],
+        rank_system = game_info['rank_system'],
+        date_created = date.today(),
+        user_id = game_info['user_id']
+    )
+    # Add and commit the new game to the session
+    db.session.add(game)
+    db.session.commit()
+    # Send the new game back to the client
+    return GameSchema().dump(game), 201
 
 # R in CRUD - Two routes (All and One)
 # Read/Get all games
 @games_bp.route('/')
-
 def all_games():
 # Select * from games; 
 # Showing all games in the competitive_network database
@@ -29,28 +50,6 @@ def one_game(game_id):
         return GameSchema().dump(game)
     else:
         return {'error': 'Game not found'}, 404
-
-# C in CRUD
-# Create a new game - same route as get all(but post method)
-@games_bp.route('/', methods=['POST'])
-# Someone must be logged in
-@jwt_required()
-def create_game():
-    # Load the incoming POST data via the schema
-    game_info = GameSchema().load(request.json)
-    # Created a new Game instance from the game_info
-    game = Game(
-        title = game_info['title'],
-        description = game_info['description'],
-        genre = game_info['genre'],
-        rank_system = game_info['rank_system'],
-        date_created = date.today()
-    )
-    # Add and commit the new game to the session
-    db.session.add(game)
-    db.session.commit()
-    # Send the new game back to the client
-    return GameSchema().dump(game), 201
 
 # U in CRUD
 # Update a game
