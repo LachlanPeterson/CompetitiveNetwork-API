@@ -10,7 +10,6 @@ users_bp = Blueprint('users', __name__)
 @jwt_required()
 def all_users():
     admin_required()
-
     # Select * from users;
     stmt = db.select(User).order_by(User.name)
     users = db.session.scalars(stmt).all()

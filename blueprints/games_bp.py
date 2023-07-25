@@ -1,7 +1,7 @@
 from flask import Blueprint, request
 from models.game import Game, GameSchema
 from init import db
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from blueprints.auth_bp import admin_required
 from datetime import date
 
@@ -22,7 +22,7 @@ def create_game():
         genre = game_info['genre'],
         rank_system = game_info['rank_system'],
         date_created = date.today(),
-        user_id = game_info['user_id']
+        user_id = get_jwt_identity()
     )
     # Add and commit the new game to the session
     db.session.add(game)
@@ -33,7 +33,10 @@ def create_game():
 # R in CRUD - Two routes (All and One)
 # Read/Get all games
 @games_bp.route('/')
+@jwt_required()
 def all_games():
+    # Admin is required
+    admin_required()
 # Select * from games; 
 # Showing all games in the competitive_network database
     stmt = db.select(Game).order_by(Game.title)
@@ -42,7 +45,10 @@ def all_games():
 
 # Read/Get one specific game;
 @games_bp.route('/<int:game_id>')
+@jwt_required()
 def one_game(game_id):
+    # Admin is required
+    admin_required()
     # Selecting the Game, where the incoming game_id equals the id from the Model
     stmt = db.select(Game).filter_by(game_id=game_id)
     game = db.session.scalar(stmt)

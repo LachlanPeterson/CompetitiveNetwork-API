@@ -1,4 +1,5 @@
 from init import db, ma
+from marshmallow import fields
 
 class Game(db.Model):
    __tablename__ = 'games'
@@ -12,9 +13,13 @@ class Game(db.Model):
    date_created = db.Column(db.Date())
 
    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
+   user = db.relationship('User', back_populates='games')
+
 
 # Marshmallow needs to know what fields to include in the Json
 class GameSchema(ma.Schema):
+   # Telling marshmallow to use UserSchema to serialize the 'user' field
+   user = fields.Nested('UserSchema', exclude=['password', 'date_created', 'games'])
    class Meta:
-      fields = ('game_id', 'title', 'description', 'genre', 'rank_system', 'user_id')
+      fields = ('game_id', 'title', 'description', 'genre', 'rank_system', 'user')
       ordered = True

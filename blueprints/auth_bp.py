@@ -10,8 +10,8 @@ auth_bp = Blueprint('auth', __name__)
 # Admin required function
 def admin_required():
    # Using jwt auth to validate admin user
-   user_email = get_jwt_identity()
-   stmt = db.select(User).filter_by(email=user_email)
+   user_id = get_jwt_identity()
+   stmt = db.select(User).filter_by(user_id=user_id)
    user = db.session.scalar(stmt)
    if not (user and user.is_admin):
       abort(401)
@@ -48,7 +48,7 @@ def login():
       stmt = db.select(User).filter_by(email=request.json['email'])
       user = db.session.scalar(stmt)
       if user and bcrypt.check_password_hash(user.password, request.json['password']):
-         token = create_access_token(identity=user.email, expires_delta=timedelta(days=7))
+         token = create_access_token(identity=user.user_id, expires_delta=timedelta(days=7))
          return {'token': token, 'user': UserSchema(exclude=['password']).dump(user)}
       else:
          return {'error': 'Invalid email address or password'}, 401
