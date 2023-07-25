@@ -1,11 +1,21 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, abort
 from datetime import timedelta
 from sqlalchemy.exc import IntegrityError
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, get_jwt_identity
 from models.user import User, UserSchema
 from init import db, bcrypt
 
 auth_bp = Blueprint('auth', __name__)
+
+# Admin required function
+def admin_required():
+   # Using jwt auth to validate admin user
+   user_email = get_jwt_identity()
+   stmt = db.select(User).filter_by(email=user_email)
+   user = db.session.scalar(stmt)
+   if not (user and user.is_admin):
+      abort(401)
+
 
 # Register Endpoint
 @auth_bp.route('/register', methods=['POST'])
