@@ -1,3 +1,5 @@
 .venv
 __pychace__
 .env
+.vscode
+.DS_Store
