@@ -7,6 +7,9 @@ from sqlalchemy.exc import IntegrityError
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from os import environ
 from dotenv import load_dotenv
+from models.user import User, UserSchema
+from models.game import Game, GameSchema
+from init import db, ma, bcrypt, jwt
 
 load_dotenv()
 
@@ -16,13 +19,11 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('DB_URI')
 app.config['JWT_SECRET_KEY'] = environ.get('JWT_KEY')
 
-
-# Open connection to database and intilized alchemy
-db = SQLAlchemy(app)
-ma = Marshmallow(app)
-bcrypt = Bcrypt(app)
-jwt = JWTManager(app)
-
+# Giving app.py the instance of app from init
+db.init_app(app)
+ma.init_app(app)
+bcrypt.init_app(app)
+jwt.init_app(app)
 
 def admin_required():
    # Using jwt auth to validate admin user
@@ -35,39 +36,6 @@ def admin_required():
 @app.errorhandler(401)
 def unauthorized(err):
    return {'error': 'You must be an admin'}, 401
-
-
-# User Entity model for Users
-class User(db.Model):
-  __tablename__ = 'users'
-
-  user_id = db.Column(db.Integer, primary_key=True)
-  name = db.Column(db.String(50)) # name 16 characters max
-  email = db.Column(db.String(50), nullable=False, unique=True)
-  password = db.Column(db.String(), nullable=False)
-  is_admin = db.Column(db.Boolean, default=False)
-  date_created = db.Column(db.Date())
-
-class UserSchema(ma.Schema):
-   class Meta:
-      fields = ('name', 'email', 'password', 'date_created', 'is_admin')
-     
-
-class Game(db.Model):
-   __tablename__ = 'games'
-
-   game_id = db.Column(db.Integer, primary_key=True)
-   title = db.Column(db.String(50))
-   description = db.Column(db.Text())
-   genre = db.Column(db.String(50))
-   rank_system = db.Column(db.Text())
-
-# Marshmallow needs to know what fields to include in the Json
-class GameSchema(ma.Schema):
-   class Meta:
-      fields = ('game_id', 'title', 'description', 'genre', 'rank_system')
-      
-
 
 # Cli command to create tables
 @app.cli.command('create')
