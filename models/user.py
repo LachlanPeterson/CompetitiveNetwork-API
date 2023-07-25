@@ -13,9 +13,11 @@ class User(db.Model):
   date_created = db.Column(db.Date())
 
   games = db.relationship('Game', back_populates='user')
+  ranks = db.relationship('Rank', back_populates='user')
 
 class UserSchema(ma.Schema):
    games = fields.List(fields.Nested('GameSchema', exclude=['user', 'game_id']))
+   ranks = fields.List(fields.Nested('RankSchema', exclude=['user', 'rank_id']))
 
    class Meta:
-      fields = ('name', 'email', 'password', 'date_created', 'is_admin', 'games')
+      fields = ('name', 'email', 'password', 'date_created', 'is_admin', 'games', 'ranks')
