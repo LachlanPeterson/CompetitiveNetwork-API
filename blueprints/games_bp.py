@@ -13,6 +13,7 @@ games_bp = Blueprint('games', __name__, url_prefix='/games')
 # Someone must be logged in
 @jwt_required()
 def create_game():
+    admin_required()
     # Load the incoming POST data via the schema
     game_info = GameSchema().load(request.json)
     # Created a new Game instance from the game_info
@@ -20,7 +21,6 @@ def create_game():
         title = game_info['title'],
         description = game_info['description'],
         genre = game_info['genre'],
-        rank_system = game_info['rank_system'],
         date_created = date.today(),
         user_id = get_jwt_identity()
     )
@@ -32,23 +32,19 @@ def create_game():
 
 # R in CRUD - Two routes (All and One)
 # Read/Get all games
-@games_bp.route('/')
-@jwt_required()
+@games_bp.route('/', methods=['GET'])
 def all_games():
-    # Admin is required
-    admin_required()
 # Select * from games; 
 # Showing all games in the competitive_network database
-    stmt = db.select(Game).order_by(Game.title)
+    stmt = db.select(Game).order_by(Game.game_id)
     games = db.session.scalars(stmt).all()
-    return GameSchema(many=True).dump(games)
+    return GameSchema(many=True, exclude=['ranks', 'user']).dump(games)
+
 
 # Read/Get one specific game;
-@games_bp.route('/<int:game_id>')
+@games_bp.route('/<int:game_id>', methods=['GET'])
 @jwt_required()
 def one_game(game_id):
-    # Admin is required
-    admin_required()
     # Selecting the Game, where the incoming game_id equals the id from the Model
     stmt = db.select(Game).filter_by(game_id=game_id)
     game = db.session.scalar(stmt)
@@ -60,10 +56,8 @@ def one_game(game_id):
 # U in CRUD
 # Update a game
 @games_bp.route('/<int:game_id>', methods=['PUT', 'PATCH'])
-# Someone must be logged in
 @jwt_required()
 def update_game(game_id):
-    # Admin is required
     admin_required()
     stmt = db.select(Game).filter_by(game_id=game_id)
     game = db.session.scalar(stmt)
@@ -72,7 +66,6 @@ def update_game(game_id):
         game.title = game_info.get('title', game.title)
         game.description = game_info.get('description', game.description)
         game.genre = game_info.get('genre', game.genre)
-        game.rank_system = game_info.get('rank_system', game.rank_system)
         # Commit model changes to database
         db.session.commit()
         return GameSchema().dump(game)
@@ -92,6 +85,6 @@ def delete_game(game_id):
     if game:
         db.session.delete(game)
         db.session.commit()
-        return {}, 200
+        return {'message': 'The Game has been deleted'}, 200
     else:
         return {'error': 'Game not found'}, 404

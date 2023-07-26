@@ -5,6 +5,7 @@ from blueprints.cli_bp import cli_bp
 from blueprints.auth_bp import auth_bp
 from blueprints.users_bp import users_bp
 from blueprints.games_bp import games_bp
+from blueprints.ranks_bp import ranks_bp
 from marshmallow.exceptions import ValidationError
 
 def setup():
@@ -32,5 +33,6 @@ def setup():
    app.register_blueprint(auth_bp)
    app.register_blueprint(users_bp)
    app.register_blueprint(games_bp)
+   app.register_blueprint(ranks_bp)
    
    return app

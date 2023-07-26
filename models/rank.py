@@ -18,7 +18,7 @@ class Rank(db.Model):
 
 class RankSchema(ma.Schema):
    user = fields.Nested('UserSchema', only=['name', 'email'])
-   game = fields.Nested('GameSchema', only=['title', 'genre', 'rank_system'])
+   game = fields.Nested('GameSchema', only=['title', 'genre'])
 
    class Meta:
       fields = ('rank_id', 'rank', 'date_created', 'user', 'game')

@@ -1,5 +1,6 @@
 from init import db, ma
 from marshmallow import fields
+from marshmallow.validate import Length, And
 
 # User Entity model for Users
 class User(db.Model):
@@ -18,6 +19,7 @@ class User(db.Model):
 class UserSchema(ma.Schema):
    games = fields.List(fields.Nested('GameSchema', exclude=['user', 'game_id']))
    ranks = fields.List(fields.Nested('RankSchema', exclude=['user', 'rank_id']))
+   title = fields.String(validate=Length(min=3, max=50))
 
    class Meta:
-      fields = ('name', 'email', 'password', 'date_created', 'is_admin', 'games', 'ranks')
+      fields = ('user_id','name', 'email', 'password', 'date_created', 'is_admin', 'games', 'ranks')

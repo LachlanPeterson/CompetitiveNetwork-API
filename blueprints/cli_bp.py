@@ -42,22 +42,19 @@ def seed_db():
        Game(
             title = 'League of Legends',
             description = 'LoL Description',
-            genre = 'MOBA - Multiplayer Online Battle Arena',
-            rank_system = "Rank system filler",
+            genre = 'MOBA',
             user_id = users[0].user_id
         ),
         Game(
             title = 'Valorant',
             description = 'Valorant Description',
-            genre = 'FPS - First Person Shooter',
-            rank_system = "Rank system filler",
+            genre = 'FPS',
             user_id = users[0].user_id
         ),
         Game(
             title = 'CS:GO - Counter Strike Global Offensive',
             description = 'CS:GO Description',
-            genre = 'FPS - First Person Shooter',
-            rank_system = "Rank system filler",
+            genre = 'FPS',
             user_id = users[1].user_id
         ),
    ]
@@ -96,11 +93,3 @@ def seed_db():
     
 
 
-# Testing SQL Queries - all fps games
-@cli_bp.cli.command('fps_games')
-def all_games():
-# Showing all fps games in the competitive_network database
-    stmt = db.select(Game).where(Game.genre == 'FPS - First Person Shooter').order_by(Game.title)
-    games = db.session.scalars(stmt).all()
-    for game in games:
-        print(game.__dict__)
