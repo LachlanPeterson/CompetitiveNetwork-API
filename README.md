@@ -72,11 +72,11 @@ However, even after presenting the drawbacks I still believe that postgreSQL is 
 **Description:** This route is designed to allow new users to register to our API and creates a new user the database. When all conditions are met the user details will be returned to the user, excluding the password (for security reasons). 
 
 Successful registration (conditions are met):
-![Successful Registration](docs/auth_bp/RegisterSuccess.PNG)
+![Successful Registration](/docs/auth_bp/RegisterSuccess.PNG)
 
 If the conditions are not met - the user is missing a required field, or if the email address is already registered - users will be presented with the following error messages:
-![Missing Fields Registration](docs/auth_bp/Register_MissingField.PNG)
-![Email already registered](docs/auth_bp/Register_EmailAlreadyReg.PNG)
+![Missing Fields Registration](/docs/auth_bp/Register_MissingField.PNG)
+![Email already registered](/docs/auth_bp/Register_EmailAlreadyReg.PNG)
 
 <br>
 
@@ -89,12 +89,12 @@ If the conditions are not met - the user is missing a required field, or if the 
 
 
 Successful Login (As only the email and password are required you can login with or without it):
-![Successful Login](docs/auth_bp/LoginSuccess.PNG)
-![Successful Login without name](docs/auth_bp/Login_WithoutName.PNG)
+![Successful Login](/docs/auth_bp/LoginSuccess.PNG)
+![Successful Login without name](/docs/auth_bp/Login_WithoutName.PNG)
 
 If the conditions are not met - the user is missing a required fields, or the email address or password is invalid (wrong) - users will be presented with the following error messages:
-![Unsuccessful login](docs/auth_bp/Login_EmailPassReq.PNG)
-![Login with invalid Email](docs/auth_bp/Login_InvalidEmailPass.PNG)
+![Unsuccessful login](/docs/auth_bp/Login_EmailPassReq.PNG)
+![Login with invalid Email](/docs/auth_bp/Login_InvalidEmailPass.PNG)
 
 <br>
 
@@ -108,16 +108,16 @@ If the conditions are not met - the user is missing a required fields, or the em
 **Description:** The route allows admins to create new games for the database, and when all conditions are met it outputs the Game details and the admin user who created it. The genre and description for games do not have to be entered as they have default values. 
 
 Successful POST examples:
-![Successful games POST](docs/games_bp/Create_Ideal.PNG)
-![Successful games POST](docs/games_bp/Create_OnlyTitle.PNG)
-![Successful games POST](docs/games_bp/Create_TitleGenre.PNG)
-![Successful games POST](docs/games_bp/Create_NoGenre.PNG)
+![Successful games POST](/docs/games_bp/Create_Ideal.PNG)
+![Successful games POST](/docs/games_bp/Create_OnlyTitle.PNG)
+![Successful games POST](/docs/games_bp/Create_TitleGenre.PNG)
+![Successful games POST](/docs/games_bp/Create_NoGenre.PNG)
 
 If the conditions are not met - the user is not an admin, the using is missing the title field, or the genre is invalid - admins will be presented with the following error messages:
 
-![Unsuccessful games POST](docs/games_bp/Create_NoAdmin.PNG)
-![Unsuccessful games POST](docs/games_bp/Create_NoTitle.PNG)
-![Unsuccessful games POST](docs/games_bp/Create_InvalidGenre.PNG)
+![Unsuccessful games POST](/docs/games_bp/Create_NoAdmin.PNG)
+![Unsuccessful games POST](/docs/games_bp/Create_NoTitle.PNG)
+![Unsuccessful games POST](/docs/games_bp/Create_InvalidGenre.PNG)
 
 <br>
 
@@ -129,7 +129,7 @@ If the conditions are not met - the user is not an admin, the using is missing t
 **Description:** The route allows anyone (non-user or users) to access and read the list of all games in the database. It outputs the details of the games in the database without ranks and users. 
 
 Successful GET:
-![Successful games POST](docs/games_bp/Read_AllGames.PNG)
+![Successful games POST](/docs/games_bp/Read_AllGames.PNG)
 
 <br>
 
@@ -141,12 +141,12 @@ Successful GET:
 **Description:** The route allows authenticated logged in users (regular or admins) to view the details of a specific game and see ALL user ranks for that game and the admin who created it. 
 
 Successful GET:
-![Successful games POST](docs/games_bp/Read_OneGame.PNG)
+![Successful games POST](/docs/games_bp/Read_OneGame.PNG)
 
 If the conditions are not met - the user is not logged in, or the game_id is not found - users will be presented with the following error messages:
 
-![Unsuccessful games POST](docs/games_bp/Read_OneGame_NotLoggedIn.PNG)
-![Unsuccessful games POST](docs/games_bp/Read_OneGame404.PNG)
+![Unsuccessful games POST](/docs/games_bp/Read_OneGame_NotLoggedIn.PNG)
+![Unsuccessful games POST](/docs/games_bp/Read_OneGame404.PNG)
 
 <br>
 
@@ -158,14 +158,14 @@ If the conditions are not met - the user is not logged in, or the game_id is not
 **Description:** The route allows authenticated logged in admins to update the a games details in the database. Upon successful completion, the updated game details will be shown. 
 
 Successful PUT/PATCH:
-![Successful games PUT/PATCH](docs/games_bp/Update_Successful.PNG)
-![Successful games PUT/PATCH](docs/games_bp/Update_MissingField.PNG)
-![Successful games PUT/PATCH](docs/games_bp/Update_Desc.PNG)
+![Successful games PUT/PATCH](/docs/games_bp/Update_Successful.PNG)
+![Successful games PUT/PATCH](/docs/games_bp/Update_MissingField.PNG)
+![Successful games PUT/PATCH](/docs/games_bp/Update_Desc.PNG)
 
 If the conditions are not met - the user is not an admin, or the game_id is not found - users will be presented with the following error messages:
 
-![Unsuccessful games PUT/PATCH](docs/games_bp/Update_NoAdmin.PNG)
-![Unsuccessful games PUT/PATCH](docs/games_bp/Update_NoGameID.PNG)
+![Unsuccessful games PUT/PATCH](/docs/games_bp/Update_NoAdmin.PNG)
+![Unsuccessful games PUT/PATCH](/docs/games_bp/Update_NoGameID.PNG)
 
 <br>
 
@@ -177,12 +177,12 @@ If the conditions are not met - the user is not an admin, or the game_id is not 
 **Description:** The route allows authenticated logged in admins delete a games from the database. Upon successful completion, the admin will receive a deleted message.
 
 Successful PUT/PATCH:
-![Successful games DELETE](docs/games_bp/Delete_Successful.PNG)
+![Successful games DELETE](/docs/games_bp/Delete_Successful.PNG)
 
 If the conditions are not met - the user is not an admin, or the game_id is not found - users will be presented with the following error messages:
 
-![Unsuccessful games DELETE](docs/games_bp/Delete_NoAdmin.PNG)
-![Unsuccessful games DELETE](docs/games_bp/Delete_NoGameID.PNG)
+![Unsuccessful games DELETE](/docs/games_bp/Delete_NoAdmin.PNG)
+![Unsuccessful games DELETE](/docs/games_bp/Delete_NoGameID.PNG)
 
 <br>
 
@@ -196,11 +196,11 @@ If the conditions are not met - the user is not an admin, or the game_id is not 
 **Description:** This route allows any logged in user to access a list of all other users in the database. If successful, the user details including name, email, user_id and is_admin will be returned. 
 
 Successful GET:
-![Successful users GET](docs/users_bp/GETAll_Success.PNG)
+![Successful users GET](/docs/users_bp/GETAll_Success.PNG)
 
 If the conditions are not met - the user is not logged in - users will be presented with the following error messages:
 
-![Unsuccessful users GET](docs/users_bp/GETALL_NotLogged.PNG)
+![Unsuccessful users GET](/docs/users_bp/GETALL_NotLogged.PNG)
 
 <br>
 
@@ -212,12 +212,12 @@ If the conditions are not met - the user is not logged in - users will be presen
 **Description:** This route allows any logged in user to access a specific users details, which shows all each Game and Rank of the individual user. This is a very important route and it solves the inital problem of why this API was built, to be able to look up specific users and see their ranks across all games they play.  
 
 Successful GET:
-![Successful users GET](docs/users_bp/GETONE_Success.PNG)
+![Successful users GET](/docs/users_bp/GETONE_Success.PNG)
 
 If the conditions are not met - the user is not logged in, or the user_id doesnt exist - users will be presented with the following error messages:
 
-![Unsuccessful users GET](docs/users_bp/GETONE_NotLogged.PNG)
-![Unsuccessful users GET](docs/users_bp/GETONE_NoUser.PNG)
+![Unsuccessful users GET](/docs/users_bp/GETONE_NotLogged.PNG)
+![Unsuccessful users GET](/docs/users_bp/GETONE_NoUser.PNG)
 
 <br>
 
@@ -229,13 +229,13 @@ If the conditions are not met - the user is not logged in, or the user_id doesnt
 **Description:** This route allows admins to update the name, email or password of any user in the database. 
 
 Successful GET:
-![Successful users PUT/PATCH](docs/users_bp/PUT_Success.PNG)
+![Successful users PUT/PATCH](/docs/users_bp/PUT_Success.PNG)
 
 If the conditions are not met - the user is not logged in, not an admin or the user is not found - admins will be presented with the following error messages:
 
-![Unsuccessful users PUT/PATCH](docs/users_bp/PUT_NotLogged.PNG)
-![Unsuccessful users PUT/PATCH](docs/users_bp/PUT_NoAdmin.PNG)
-![Unsuccessful users PUT/PATCH](docs/users_bp/PUT_NoUser.PNG)
+![Unsuccessful users PUT/PATCH](/docs/users_bp/PUT_NotLogged.PNG)
+![Unsuccessful users PUT/PATCH](/docs/users_bp/PUT_NoAdmin.PNG)
+![Unsuccessful users PUT/PATCH](/docs/users_bp/PUT_NoUser.PNG)
 
 <br>
 
@@ -247,13 +247,13 @@ If the conditions are not met - the user is not logged in, not an admin or the u
 **Description:** The route allows authenticated logged in admins delete a user from the database. The users ranks and game details will also be deleted. Upon successful completion, the admin will receive a deleted message.
 
 Successful GET:
-![Successful users DELETE](docs/users_bp/DELETE_Success.PNG)
+![Successful users DELETE](/docs/users_bp/DELETE_Success.PNG)
 
 If the conditions are not met - the user is not logged in, not an admin or the user is not found - admins will be presented with the following error messages:
 
-![Unsuccessful users DELETE](docs/users_bp/DELETE_NoLogged.PNG)
-![Unsuccessful users DELETE](docs/users_bp/DELETE_NoAdmin.PNG)
-![Unsuccessful users DELETE](docs/users_bp/DELETE_NoUser.PNG)
+![Unsuccessful users DELETE](/docs/users_bp/DELETE_NoLogged.PNG)
+![Unsuccessful users DELETE](/docs/users_bp/DELETE_NoAdmin.PNG)
+![Unsuccessful users DELETE](/docs/users_bp/DELETE_NoUser.PNG)
 
 <br>
 
@@ -267,11 +267,11 @@ If the conditions are not met - the user is not logged in, not an admin or the u
 **Description:** This route allows any logged in user to access a list of all ranks accross all games - based on the time it was created. Therefore the list it outputs will show the latest rank added in the database.
 
 Successful POST:
-![Successful ranks GET](docs/ranks_bp/GETALL_Success.PNG)
+![Successful ranks GET](/docs/ranks_bp/GETALL_Success.PNG)
 
 If the conditions are not met - the user is not logged in - users will be presented with the following error messages:
 
-![Unsuccessful ranks GET](docs/ranks_bp/GETALL_NotLogged.PNG)
+![Unsuccessful ranks GET](/docs/ranks_bp/GETALL_NotLogged.PNG)
 
 <br>
 
@@ -283,11 +283,11 @@ If the conditions are not met - the user is not logged in - users will be presen
 **Description:** This route allows any logged in user to access a specific rank_id, showing the game it was achieved in, the overall rank and the user.
 
 Successful POST:
-![Successful ranks GET](docs/ranks_bp/GETONE_Success.PNG)
+![Successful ranks GET](/docs/ranks_bp/GETONE_Success.PNG)
 
 If the conditions are not met - the user is not logged in - users will be presented with the following error messages:
 
-![Unsuccessful ranks GET](docs/ranks_bp/GETONE_NotLogged.PNG)
+![Unsuccessful ranks GET](/docs/ranks_bp/GETONE_NotLogged.PNG)
 
 <br>
 
@@ -299,13 +299,13 @@ If the conditions are not met - the user is not logged in - users will be presen
 **Description:** This route allows an admin to update ranked details for specific users.
 
 Successful POST:
-![Successful ranks PUT/PATCH](docs/ranks_bp/PUT_Success.PNG)
+![Successful ranks PUT/PATCH](/docs/ranks_bp/PUT_Success.PNG)
 
 If the conditions are not met - the user is not logged in, not an admin, or the rank_id cannot be found - users will be presented with the following error messages:
 
-![Unsuccessful ranks PUT/PATCH](docs/ranks_bp/PUT_NotLogged.PNG)
-![Unsuccessful ranks PUT/PATCH](docs/ranks_bp/PUT_NotAdmin.PNG)
-![Unsuccessful ranks PUT/PATCH](docs/ranks_bp/PUT_NotFound.PNG)
+![Unsuccessful ranks PUT/PATCH](/docs/ranks_bp/PUT_NotLogged.PNG)
+![Unsuccessful ranks PUT/PATCH](/docs/ranks_bp/PUT_NotAdmin.PNG)
+![Unsuccessful ranks PUT/PATCH](/docs/ranks_bp/PUT_NotFound.PNG)
 
 <br>
 
@@ -317,13 +317,13 @@ If the conditions are not met - the user is not logged in, not an admin, or the 
 **Description:** This route allows an admin to delete a users existing rank from a game. This could be used to delete ranks from a user found to be cheating. 
 
 Successful POST:
-![Successful ranks DELETE](docs/ranks_bp/DELETE_Success.PNG)
+![Successful ranks DELETE](/docs/ranks_bp/DELETE_Success.PNG)
 
 If the conditions are not met - the user is not logged in, not an admin, or the rank_id cannot be found - users will be presented with the following error messages:
 
-![Unsuccessful ranks PUT/PATCH](docs/ranks_bp/DELETE_NotLogged.PNG)
-![Unsuccessful ranks PUT/PATCH](docs/ranks_bp/DELETE_NotAdmin.PNG)
-![Unsuccessful ranks PUT/PATCH](docs/ranks_bp/DELETE_NotFound.PNG)
+![Unsuccessful ranks PUT/PATCH](/docs/ranks_bp/DELETE_NotLogged.PNG)
+![Unsuccessful ranks PUT/PATCH](/docs/ranks_bp/DELETE_NotAdmin.PNG)
+![Unsuccessful ranks PUT/PATCH](/docs/ranks_bp/DELETE_NotFound.PNG)
 
 <br>
 
@@ -333,7 +333,7 @@ If the conditions are not met - the user is not logged in, not an admin, or the 
 
 ## ERD for Competitive Network API
 
-![ERD for Competitive Network API](docs/ERD.PNG)
+![ERD for Competitive Network API](/docs/ERD.PNG)
 
 <br>
 
@@ -397,11 +397,11 @@ As the name suggests, the Flask JWT Extended library is an additional library fo
 
 In the Competitive Network API, I’ve used these functions to setup admin only routes and routes that required users to be logged in with a valid JWT. For users to access a jwt_required route, the JWT is required as the Bearer Token in the Authorization header when sending each request. An example of this generated token can be seen below when logging in to the API:
 
-![JWT Token Creation after login](docs/JWT.PNG)
+![JWT Token Creation after login](/docs/JWT.PNG)
 
 Therefore, a user can now use this token when sending a request rather than logging into the API for every request as the Bearer Token:
 
-![JWT Bearer Token in Header Authorization](docs/JWT%20Header.PNG)
+![JWT Bearer Token in Header Authorization](/docs/JWT%20Header.PNG)
 
 
 ### Psycopg2 
@@ -429,7 +429,7 @@ Return UserSchema.dump(user)
 ```
 The User Model can be viewed below:
 
-![Users Model](docs/UsersModel.PNG)
+![Users Model](/docs/UsersModel.PNG)
 
 ### Ranks Model:
 The database columns for the Rank Model are outlined in the screenshot below. They contain rank_id (primary key), rank, date_created, user_id (foreign key) and game_id (foreign key). The relationship between Ranks and the other two entities can be seen as it includes the two foreign keys from each model respectively. Therefore, the relationship between Ranks to both Users and Games is One, as each rank must be associated with one specific user and game respectively. Thus, it is reflected in its db. relationship as a child to both the User and Game model and will not delete the related user or game if it is deleted. 
@@ -440,7 +440,7 @@ The RankSchema is used to convert these data types in database readable format v
 Return RankSchema.dump(rank)
 ```
 
-![Ranks Model](docs/RanksModel.PNG)
+![Ranks Model](/docs/RanksModel.PNG)
 
 ### Games Model:
 The database columns for the Game Model are outlined in the screenshot below. The model contains the following columns in the games table: game_id (primary key), title, description, genre, date_created and user_id (foreign key). As mentioned previously in the User model, the games model is indeed a child of User, and if it is deleted it will not delete the related user. However, as shown by the db.relationship it is a parent of Rank. This is because a given rank can only relate to ‘One’ game, and games can have ‘One to Many’ ranks. Therefore, if a game is deleted from a specific user, then the corresponding rank that user had in the game must also be deleted… as reflected by the cascade ='all, delete'.
@@ -451,7 +451,7 @@ The GameSchema is used to convert these data types in database readable format v
 Return GameSchema.dump(game)
 ```
 
-![Games Model](docs/GameModel.PNG)
+![Games Model](/docs/GameModel.PNG)
 
 <br>
 
@@ -471,7 +471,7 @@ Thus, the planning stage was needed and broken down as follows:
 
 The breakdown of the problem was completed after posting the following to the api-app-ideas discord page:
 
-![Discord Plan](docs/DiscordPlan.PNG)
+![Discord Plan](/docs/DiscordPlan.PNG)
 
 The ERD was created as already seen above in the README.  
 [ERD for my App - (R6)](#erd-for-competitive-network-api)
@@ -507,7 +507,7 @@ These tasks are tracked via Git commits and electronically in Microsoft Excel. T
 
 The task tracking is shown below, but the completed colours have been altered to give an example of each status:
 
-![Task Tracking](docs/TaskTracking.PNG)  I 
+![Task Tracking](/docs/TaskTracking.PNG)  I 
 
 <br>
 
