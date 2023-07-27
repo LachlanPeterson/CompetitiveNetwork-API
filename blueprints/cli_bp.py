@@ -17,7 +17,7 @@ def create_db():
 # Seed Tables
 @cli_bp.cli.command('seed')
 def seed_db():
-   
+   # Seed Users
    users = [
       User(
             name = 'Lachlan Peterson',
@@ -35,9 +35,10 @@ def seed_db():
    ]
 
    db.session.query(User).delete()
-   db.session.add_all(users)
+   db.session.add_all(users) 
    db.session.commit()
 
+   #Seed Games
    games = [
        Game(
             title = 'League of Legends',
@@ -62,7 +63,8 @@ def seed_db():
    db.session.query(Game).delete()
    db.session.add_all(games)
    db.session.commit()
-
+   
+   #Seed Ranks
    ranks = [
        Rank(
             rank = 'Master',
